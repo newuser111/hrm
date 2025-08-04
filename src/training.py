@@ -166,8 +166,10 @@ class HRMTrainer:
     ) -> Dict[str, float]:
         """Single training step with HRM-specific losses"""
         
-        inputs = batch['inputs']
-        targets = batch['targets']
+        # Move inputs to device
+        device = next(self.model.parameters()).device
+        inputs = batch['inputs'].to(device)
+        targets = batch['targets'].to(device)
         
         # Forward pass with intermediate states
         result = self.model(inputs, return_intermediates=True)
@@ -225,13 +227,15 @@ class HRMTrainer:
         total_samples = 0
         total_steps = 0
         
+        device = next(self.model.parameters()).device
+        
         with torch.no_grad():
             for i, batch in enumerate(dataloader):
                 if max_batches and i >= max_batches:
                     break
                     
-                inputs = batch['inputs']
-                targets = batch['targets']
+                inputs = batch['inputs'].to(device)
+                targets = batch['targets'].to(device)
                 
                 result = self.model(inputs)
                 
@@ -301,17 +305,3 @@ class HRMTrainer:
             epoch_metrics[key] /= len(dataloader)
             
         return epoch_metrics
-model.parameters(), max_norm=1.0)
-        
-        # Update parameters
-        self.optimizer.step()
-        self.q_optimizer.step()
-        
-        return {
-            'total_loss': total_loss.item(),
-            'main_loss': main_loss.item(), 
-            'supervision_loss': supervision_loss.item(),
-            'act_loss': act_loss.item(),
-            'avg_steps': result['num_steps'],
-            'avg_halt_prob': result['halting_probs'].mean().item()
-        }

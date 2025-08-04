@@ -61,7 +61,7 @@ class ARCDataset(Dataset):
         output_padded = F.pad(output_grid, (0, 30-output_grid.size(1), 0, 30-output_grid.size(0)))
         
         # Flatten for sequence processing
-        input_seq = input_padded.flatten().unsqueeze(0)  # [1, 900]
+        input_seq = input_padded.flatten().unsqueeze(-1)  # [900, 1]
         output_seq = output_padded.flatten()  # [900]
         
         return {
@@ -159,7 +159,7 @@ class SudokuDataset(Dataset):
         puzzle, solution = self.puzzles[idx]
         
         # Convert to tensors and flatten for sequence processing
-        input_seq = torch.tensor(puzzle.flatten(), dtype=torch.float32).unsqueeze(0)  # [1, 81]
+        input_seq = torch.tensor(puzzle.flatten(), dtype=torch.float32).unsqueeze(-1)  # [81, 1]
         target_seq = torch.tensor(solution.flatten(), dtype=torch.long)  # [81]
         
         return {
