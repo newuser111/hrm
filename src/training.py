@@ -14,7 +14,7 @@ import torch.nn.functional as F
 from torch.optim import AdamW
 from typing import Dict, List, Tuple, Optional
 import wandb
-from tqdm import tqdm
+from tqdm.auto import tqdm
 import numpy as np
 
 from .model import HRM
